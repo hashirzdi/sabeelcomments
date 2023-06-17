@@ -23,6 +23,7 @@ function getUniqueValues() {
   var data = sheet.getDataRange().getValues();
   var uniqueValues = [];
 
+
   for (var i = 1; i < data.length; i++) {
     var value = data[i][0].toString().toLowerCase();
     if (value && uniqueValues.indexOf(value) === -1) {
