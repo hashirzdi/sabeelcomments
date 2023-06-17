@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Responsive Template</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      font-size: 16px;
+      background-color: #e9f1fa;
+    }
+
+    .header {
+      background-color: #002c5f;
+      color: white;
+      padding: 10px;
+      text-align: center;
+    }
+
+    .header img {
+      width: 100px;
+      height: 40px;
+      margin-right: -10px;
+      display: inline-block;
+      vertical-align: middle;
+    }
+
+    .header h1 {
+      display: inline-block;
+      vertical-align: middle;
+      font-size: 34px;
+      margin: 0;
+    }
+
+    h2 {
+      font-size: 30px;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+
+    input[type="text"] {
+      width: 300px;
+      padding: 5px;
+      margin-bottom: 10px;
+    }
+
+    select {
+      width: 300px;
+      padding: 5px;
+      text-transform: capitalize;
+      margin-bottom: 10px;
+    }
+
+    .btn {
+      background-color: #00abe4;
+      color: white;
+      padding: 8px 16px;
+      border: none;
+      cursor: pointer;
+    }
+
+    .reset-btn {
+      background-color: #00abe4;
+      color: white;
+      padding: 8px 16px;
+      border: none;
+      cursor: pointer;
+      margin-left: 10px;
+    }
+
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      margin-left: 20px;
+      margin-right: 20px;
+      background-color: #ffffff;
+    }
+
+    .table th,
+    .table td {
+      padding: 8px;
+      border-bottom: 1px solid #ddd;
+      color: #002c5f;
+    }
+
+    .table th {
+      background-color: #002c5f;
+      color: white;
+      font-weight: bold;
+      font-size: 18px;
+    }
+
+    .table tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+
+    .table tr:hover {
+      background-color: #f5f5f5;
+    }
+
+    /* Media Query for responsive font size */
+    @media (max-width: 600px) {
+      body {
+        font-size: 14px;
+      }
+    }
+
+    /* Centering and vertical alignment */
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 30px;
+    }
+
+    /* Responsive Table */
+    @media (max-width: 600px) {
+      .table {
+        font-size: 14px;
+      }
+    }
+
+    /* Media Query for tablets */
+    @media (max-width: 991.98px) {
+      .container {
+        align-items: center;
+      }
+
+      #searchForm {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      #textInput,
+      #dropdown {
+        margin: 10px;
+        width: auto;
+      }
+
+      .btn,
+      .reset-btn {
+        margin: 10px;
+      }
+    }
+
+    /* Media Query for mobile devices */
+    @media (max-width: 767.98px) {
+      .container {
+        align-items: center;
+      }
+
+      #searchForm {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      #textInput,
+      #dropdown {
+        margin: 10px;
+        width: auto;
+      }
+
+      .btn,
+      .reset-btn {
+        margin: 10px;
+      }
+    }
+  </style>
+  <link rel="icon" href="https://www.sabeelmedia.in/assets/img/logo.png" type="image/png">
+</head>
+<body>
+  <div class="header">
+    <img src="https://www.sabeelmedia.in/assets/img/logo.png" alt="Logo">
+    <h1><a href="sabeelmedia.in" style="color: white;">SABEEL MEDIA</a></h1>
+  </div>
+
+  <div class="container">
+    <h2>SABEEL COMMENTS</h2>
+
+    <form id="searchForm">
+      <input type="text" id="textInput" placeholder="Search queries">
+      <select id="dropdown"></select>
+      <button type="submit" class="btn">Search</button>
+      <button type="button" class="reset-btn">Reset</button>
+    </form>
+
+    <table id="resultsTable" class="table"></table>
+  </div>
+
+    <script>
+    // Function to capitalize dropdown options
+    function capitalizeOptions(options) {
+      return options.map(option => option.charAt(0).toUpperCase() + option.slice(1));
+    }
+
+    // Function to fetch and populate dropdown options
+    function populateDropdown() {
+      fetch("https://script.google.com/macros/s/AKfycbzfKsjKLZQF-y5Ax9yw78NtW0YnIzcE0jgtlgnIcPto_L6uilLOJjKNGCUDib9L3wkfOg/exec?endpoint=options", {
+        headers: {
+          'Content-Type': 'text/plain'
+        }
+      })
+        .then(response => response.json())
+        .then(data => {
+          const dropdown = document.getElementById("dropdown");
+          const capitalizedOptions = capitalizeOptions(data);
+          capitalizedOptions.forEach(option => {
+            const optionElement = document.createElement("option");
+            optionElement.value = option;
+            optionElement.textContent = option;
+            dropdown.appendChild(optionElement);
+          });
+        });
+    }
+
+    // Function to handle form submission
+    function handleFormSubmit(event) {
+      event.preventDefault();
+      const selectedOption = document.getElementById("dropdown").value;
+      const searchText = encodeURIComponent(selectedOption);
+      const url = `https://script.google.com/macros/s/AKfycbzfKsjKLZQF-y5Ax9yw78NtW0YnIzcE0jgtlgnIcPto_L6uilLOJjKNGCUDib9L3wkfOg/exec?endpoint=search&text=${searchText}`;
+
+      fetch(url, {
+        headers: {
+          'Content-Type': 'text/plain'
+        }
+      })
+        .then(response => response.json())
+        .then(data => {
+          const table = document.getElementById("resultsTable");
+          table.innerHTML = ""; // Clear previous results
+
+          const headers = Object.keys(data[0]);
+          const headerRow = document.createElement("tr");
+          headers.forEach(header => {
+            const th = document.createElement("th");
+            th.textContent = header;
+            headerRow.appendChild(th);
+          });
+          table.appendChild(headerRow);
+
+          data.forEach((result, index) => {
+            const row = document.createElement("tr");
+            if (index % 2 === 0) {
+              row.style.backgroundColor = "#f2f2f2";
+            }
+            headers.forEach(header => {
+              const cell = document.createElement("td");
+              if (header === "Answer link") {
+                const link = document.createElement("a");
+                link.href = result[header];
+                link.target = "_blank";
+                link.textContent = result[header];
+                cell.appendChild(link);
+              } else {
+                cell.textContent = result[header];
+              }
+              row.appendChild(cell);
+            });
+            table.appendChild(row);
+          });
+        });
+    }
+
+    // Reset form values
+    function resetForm() {
+      document.getElementById("searchForm").reset();
+      document.getElementById("dropdown").selectedIndex = 0;
+    }
+
+    // Populate dropdown on page load
+    populateDropdown();
+
+    // Attach form submission handler
+    const searchForm = document.getElementById("searchForm");
+    searchForm.addEventListener("submit", handleFormSubmit);
+
+    // Attach reset button click handler
+    const resetBtn = document.querySelector(".reset-btn");
+    resetBtn.addEventListener("click", resetForm);
+  </script>
+</body>
+</html>
